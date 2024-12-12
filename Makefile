@@ -1,5 +1,5 @@
 CC=clang++
-CFLAGS =-fopenmp -lcrypto -stdlib=libc++ --std=c++11 -Wno-deprecated-declarations
+CFLAGS =-fopenmp -lcrypto -stdlib=libc++ --std=c++11 -Wno-deprecated-declarations -I/opt/homebrew/opt/openssl@3/include -L/opt/homebrew/opt/openssl@3/lib
 EXEC=run
 MAIN=src/main.cpp
 

@@ -6,12 +6,11 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     const string str = "Helloo";
-    const string filePath = "testfiles/movie.mkv";
-    const string listpath = "lists/testlist2.txt";
+    const string filePath = "testfiles/hello.dmg";
     string hash = md5FromFile(filePath);
     if (hash != "")
     {  
-        if (blackHashScan(hash,listpath))
+        if (blackHashScan(hash))
         {
             cout<<"Threat found!!!"<<endl;
         }else{
