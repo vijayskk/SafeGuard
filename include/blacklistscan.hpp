@@ -1,43 +1,50 @@
 #include <time.h>
+#include <omp.h>
 #include <fstream>
 #include <iostream>
 using namespace std;
 
-long timeinmsnow(){
+long timeinmsnow()
+{
     auto now = chrono::system_clock::now();
 
     auto duration = now.time_since_epoch();
 
     // Convert duration to milliseconds
-    auto milliseconds
-        = chrono::duration_cast<chrono::milliseconds>(
-              duration)
-              .count();
+    auto milliseconds = chrono::duration_cast<chrono::milliseconds>(
+                            duration)
+                            .count();
     return milliseconds;
 }
 
-bool blackHashScan(string hash, string hashfile)
+bool blackHashScan(string hash)
 {
-    ifstream file(hashfile);
-    if (!file.is_open())
-    {
-        std::cerr << "Error opening file!" << std::endl;
-        return 1;
-    }
-    cout<<"Scanning..."<<endl;
     long start = timeinmsnow();
-    string line;
-    long index = 1;
-    while (getline(file,line))
-    {        
-        if (line.find(hash) != string::npos)
+    omp_set_num_threads(16);
+#pragma omp parallel
+    {
+        char filename[20];
+        sprintf(filename,"chunks/part_%d.txt",omp_get_thread_num() - 1 )
+        ifstream file(filename);
+        if (!file.is_open())
         {
-            cout<<"Found "<<hash<<" in line: "<<index<<": '"<<line<<"'"<<endl<< "took "<<(timeinmsnow()-start)<<" milliseconds."<<endl;
-            return true;
-
-        } 
-        index++;
+            std::cerr << "Error opening file!" << std::endl;
+            return 1;
+        }
+        
+        string line;
+        while (getline(file, line))
+        {
+            if (line.find(hash) != string::npos)
+            {
+                cout << "Found " << hash << " in line: " << index << ": '" << line << "'" << endl
+                     << "took " << (timeinmsnow() - start) << " milliseconds. from thread "<<omp_get_thread_num() << endl;
+                return true;
+            }
+        }
     }
-    cout<<endl<< "took "<<(timeinmsnow()-start)<<" milliseconds."<<endl;
+
+    cout << endl
+         << "took " << (timeinmsnow() - start) << " milliseconds." << endl;
     return false;
 }
