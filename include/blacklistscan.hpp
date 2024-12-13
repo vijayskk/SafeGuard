@@ -21,7 +21,7 @@ bool blackHashScan(string hash)
 {
     bool state = false;
     long start = timeinmsnow();
-    omp_set_num_threads(16);
+    omp_set_num_threads(256);
     cout<<"Scanning..."<<endl;
 #pragma omp parallel
     {
@@ -44,12 +44,20 @@ bool blackHashScan(string hash)
                 state = true;
             }
             index++;
+            if (state)
+            {
+                break;
+            }
+            
         }
-        cout<<"Thread "<< omp_get_thread_num() <<" completed."<<endl;
+        //cout<<"Thread "<< omp_get_thread_num() <<" completed."<<endl;
         
     }
-
-    cout << endl
-         << "took " << (timeinmsnow() - start) << " milliseconds." << endl;
+    if (!state)
+    {
+        cout << endl<< "took " << (timeinmsnow() - start) << " milliseconds." << endl;
+    }
+    
+    
     return state;
 }
