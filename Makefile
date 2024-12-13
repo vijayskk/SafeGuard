@@ -11,6 +11,7 @@ main:src/main.cpp
 	$(CC) $? $(CFLAGS) -o build/$(EXEC) 
 run:
 	build/$(EXEC)
-
+gui:
+	python3 client/main.py
 clear:
 	rm build/* 
