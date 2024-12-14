@@ -5,7 +5,6 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    const string str = "Helloo";
     const string filePath = "testfiles/hello.dmg";
     string hash = md5FromFile(filePath);
     if (hash != "")
